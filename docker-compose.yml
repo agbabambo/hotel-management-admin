@@ -1,0 +1,12 @@
+version: '3.9'
+services:
+  pg:
+    image: postgres
+    container_name: pg
+    environment:
+      - POSTGRES_USER=leaf
+      - POSTGRES_PASSWORD=letmein
+      - POSTGRES_DB=hotel
+    restart: always
+    ports:
+      - 5432:5432

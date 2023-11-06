@@ -1,0 +1,253 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+
+  firstName   String?
+  lastName    String?
+  password    String?
+  phoneNumber String?
+  address     String?
+
+  role Role @default(MEMBER)
+
+  bookings Booking[]
+  votes    Vote[]
+  payments Payment[]
+}
+
+enum Role {
+  MEMBER
+  STAFF
+  ADMIN
+}
+
+model Address {
+  id          String  @id @default(uuid())
+  contactName String?
+  phone       String
+  coordinate  String
+  ward        Int
+  district    Int
+  province    Int
+  addressLine String
+
+  // TODO: need to expand. Ward, district, province (int) only work with
+  // provinces.open-api.vn, maybe research another database design
+  // country         Int?
+
+  hotels Hotel[]
+}
+
+model Hotel {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  images      String[]
+  isArchived  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  addressId String
+  address   Address @relation(fields: [addressId], references: [id])
+
+  // TODO: location and trasportation: airport nearby, museum, shopping,
+  // airport: String // 'Samurai Museum,1.5;Imperial Palace,6.6' 
+  // nearby: String // data input must be sanitize: ;, 
+
+  rooms          Room[]
+  amenity_Hotels Amenity_Hotel[]
+}
+
+model Room {
+  id         String     @id @default(uuid())
+  name       String     @unique
+  status     RoomStatus
+  isArchived Boolean    @default(false)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  roomTypeId String
+  roomType   RoomType @relation(fields: [roomTypeId], references: [id])
+  hotelId    String
+  hotel      Hotel    @relation(fields: [hotelId], references: [id])
+
+  booking_rooms Booking_Room[]
+  votes         Vote[]
+}
+
+enum RoomStatus {
+  booking
+  empty
+  closed
+  needToClean
+  repairing
+}
+
+model RoomType {
+  id            String   @id @default(uuid())
+  name          String   @unique
+  description   String
+  images        String[]
+  occupancy     Int
+  numBeg        Int
+  price         Int
+  maxBookingDay Int
+  isArchived    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  discountId String?
+  discount   Discount? @relation(fields: [discountId], references: [id])
+
+  rooms             Room[]
+  amenity_RoomTypes Amenity_RoomType[]
+}
+
+model Amenity {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String
+  image       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  amenity_RoomTypes Amenity_RoomType[]
+  amenity_Hotels    Amenity_Hotel[]
+}
+
+model Amenity_RoomType {
+  amenityId  String
+  amenity    Amenity  @relation(fields: [amenityId], references: [id])
+  roomTypeId String
+  roomType   RoomType @relation(fields: [roomTypeId], references: [id])
+
+  @@id([amenityId, roomTypeId])
+}
+
+model Amenity_Hotel {
+  amenityId String
+  amenity   Amenity @relation(fields: [amenityId], references: [id])
+  hotelId   String
+  hotel     Hotel   @relation(fields: [hotelId], references: [id])
+
+  @@id([amenityId, hotelId])
+}
+
+model Booking_Room {
+  roomId    String
+  room      Room    @relation(fields: [roomId], references: [id])
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id])
+  numAdults Int
+  numKids   Int
+
+  @@id([roomId, bookingId])
+}
+
+model Booking {
+  id        String   @id @default(cuid())
+  startDate DateTime
+  endDate   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  payments      Payment[]
+  booking_rooms Booking_Room[]
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+  star      Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  roomId String
+  room   Room   @relation(fields: [roomId], references: [id])
+}
+
+model Discount {
+  id              String   @id @default(cuid())
+  name            String   @unique
+  description     String
+  discountPercent Int
+  startDate       DateTime
+  endDate         DateTime
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  roomTypes RoomType[]
+}
+
+model Payment {
+  id         String   @id @default(cuid())
+  roomCharge Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  // TODO: research more
+
+  userId    String
+  user      User    @relation(fields: [userId], references: [id])
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id])
+}
