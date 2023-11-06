@@ -24,12 +24,7 @@ const AmenitiesPage = async () => {
       </h1>
       <p>Manage {infoData.label}</p>
       <hr className='my-6' />
-      <DataTable
-        searchKey='name'
-        columns={columns}
-        data={formattedData}
-        link={infoData.pluralLink}
-      />
+      <DataTable searchKey='name' columns={columns} data={formattedData} />
     </div>
   )
 }

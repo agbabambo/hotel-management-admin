@@ -38,6 +38,7 @@ const Map: FC<
       />
       {children}
       <div className='text-black'>
+        {/* @ts-ignore */}
         <MapSearchField apiKey='AAPKccf963c58cb0443e87cc9740b2585ee6I2So0bTe3K6HyrJz1k5OBzne6mETyE5Ka_9Tj9AWUVxyO1xxvXa40DW3VITaMDP4' />
       </div>
     </MapContainer>

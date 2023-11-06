@@ -1,6 +1,7 @@
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import { NextResponse } from 'next/server'
 
+// TODO: refactor
 export const knownErrHandler = (
   err: any,
   path: string
