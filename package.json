@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "seed": "bunx prisma db seed -- --environment development",
-    "seed:npx": "bunx prisma db seed -- --environment development"
+    "seed:npx": "bunx prisma db seed -- --environment development",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.1",
@@ -77,5 +78,5 @@
   ],
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
-  } 
+  }
 }
