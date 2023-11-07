@@ -7,19 +7,20 @@ import { rooms } from './data/rooms'
 import { amenity_Hotels } from './data/amenity_Hotels'
 import { discounts } from './data/discounts'
 import { addresses } from './data/addresses'
+import { users } from './data/user'
 
 const main = async () => {
   try {
-    // await db.amenity.createMany({ data: amenities })
-    // await db.roomType.createMany({ data: roomTypes })
-    // await db.amenity_RoomType.createMany({ data: amenity_RoomTypes })
     // await db.address.createMany({ data: addresses })
+    // await db.amenity.createMany({ data: amenities })
     // await db.hotel.createMany({ data: hotels })
     // await db.amenity_Hotel.createMany({ data: amenity_Hotels })
-    // // @ts-ignore
+    // await db.roomType.createMany({ data: roomTypes })
+    // await db.amenity_RoomType.createMany({ data: amenity_RoomTypes })
+    // @ts-ignore
     // await db.room.createMany({ data: rooms })
-    await db.discount.createMany({ data: discounts })
-
+    // await db.discount.createMany({ data: discounts })
+    // await db.user.createMany({ data: users })
     // ********** DELETE *******
     // await db.amenity_RoomType.deleteMany()
     // await db.amenity_Hotel.deleteMany()

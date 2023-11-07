@@ -8,7 +8,14 @@ export async function GET(
   { params }: { params: { hotelId: string } }
 ) {
   try {
-    const hotel = await db.hotel.findUnique({ where: { id: params.hotelId } })
+    const hotel = await db.hotel.findUnique({
+      where: { id: params.hotelId },
+      include: {
+        address: true,
+        roomTypes: true,
+        amenity_Hotels: { include: { amenity: true } },
+      },
+    })
 
     return NextResponse.json(hotel)
   } catch (err) {

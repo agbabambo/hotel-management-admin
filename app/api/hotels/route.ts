@@ -3,14 +3,22 @@ import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { adminCheck } from '@/helpers/adminCheck'
 import { knownErrHandler } from '@/helpers/knownErrHanler'
+import queryString from 'query-string'
 
-export async function GET() {
+export async function GET(req: Request) {
+  const query = queryString.parse(req.url)
+
   try {
+    if (!query.p) return NextResponse.json([])
+
     const hotels = await db.hotel.findMany({
+      where: {
+        address: { province: +query.p },
+      },
       include: {
         address: true,
         amenity_Hotels: { include: { amenity: true } },
-        rooms: { orderBy: [{ roomType: { price: 'asc' } }], take: 1 },
+        roomTypes: true,
       },
     })
 

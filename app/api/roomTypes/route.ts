@@ -2,12 +2,19 @@ import { adminCheck } from '@/helpers/adminCheck'
 import { knownErrHandler } from '@/helpers/knownErrHanler'
 import { db } from '@/lib/db'
 import { NextResponse } from 'next/server'
+import queryString from 'query-string'
 
-export async function GET() {
+export async function GET(req: Request) {
+  const query = queryString.parse(req.url)
+
   try {
+    if (!query.hotelId) return NextResponse.json([])
+
     const roomTypes = await db.roomType.findMany({
+      where: { hotelId: query.hotelId as string },
       include: {
         rooms: { include: { booking_rooms: true } },
+        amenity_RoomTypes: { include: { amenity: true } },
         discount: true,
       },
     })

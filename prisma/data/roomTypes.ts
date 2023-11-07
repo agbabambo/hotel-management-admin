@@ -14,6 +14,7 @@ export const roomTypes = [
     occupancy: 6,
     numBeg: 2,
     price: 182,
+    hotelId: 'hotel-01',
   },
   {
     id: 'room-type-02',
@@ -33,6 +34,7 @@ export const roomTypes = [
     occupancy: 3,
     numBeg: 1,
     price: 175,
+    hotelId: 'hotel-01',
   },
   {
     id: 'room-type-03',
@@ -52,6 +54,7 @@ export const roomTypes = [
     occupancy: 5,
     numBeg: 2,
     price: 908,
+    hotelId: 'hotel-01',
   },
   {
     id: 'room-type-04',
@@ -69,6 +72,7 @@ export const roomTypes = [
     occupancy: 2,
     numBeg: 1,
     price: 150,
+    hotelId: 'hotel-02',
   },
   {
     id: 'room-type-05',
@@ -84,6 +88,7 @@ export const roomTypes = [
     occupancy: 5,
     numBeg: 2,
     price: 203,
+    hotelId: 'hotel-02',
   },
   {
     id: 'room-type-06',
@@ -100,6 +105,7 @@ export const roomTypes = [
     occupancy: 5,
     numBeg: 2,
     price: 203,
+    hotelId: 'hotel-02',
   },
   {
     id: 'room-type-07',
@@ -118,6 +124,7 @@ export const roomTypes = [
     occupancy: 10,
     numBeg: 3,
     price: 773,
+    hotelId: 'hotel-03',
   },
   {
     id: 'room-type-08',
@@ -134,6 +141,7 @@ export const roomTypes = [
     occupancy: 6,
     numBeg: 2,
     price: 320,
+    hotelId: 'hotel-03',
   },
   {
     id: 'room-type-09',
@@ -148,5 +156,6 @@ export const roomTypes = [
     occupancy: 4,
     numBeg: 2,
     price: 820,
+    hotelId: 'hotel-03',
   },
 ]

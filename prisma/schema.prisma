@@ -86,7 +86,7 @@ model Address {
   province    Int
   addressLine String
 
-  // TODO: need to expand. Ward, district, province (int) only work with
+  // TODO: Ward, district, province (int) only work with
   // provinces.open-api.vn, maybe research another database design
   // country         Int?
 
@@ -109,13 +109,14 @@ model Hotel {
   // airport: String // 'Samurai Museum,1.5;Imperial Palace,6.6' 
   // nearby: String // data input must be sanitize: ;, 
 
-  rooms          Room[]
+  roomTypes RoomType[]
+
   amenity_Hotels Amenity_Hotel[]
 }
 
 model Room {
   id         String     @id @default(uuid())
-  name       String     @unique
+  name       String
   status     RoomStatus
   isArchived Boolean    @default(false)
   createdAt  DateTime   @default(now())
@@ -123,8 +124,6 @@ model Room {
 
   roomTypeId String
   roomType   RoomType @relation(fields: [roomTypeId], references: [id])
-  hotelId    String
-  hotel      Hotel    @relation(fields: [hotelId], references: [id])
 
   booking_rooms Booking_Room[]
   votes         Vote[]
@@ -150,6 +149,9 @@ model RoomType {
   isArchived    Boolean  @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  hotelId String
+  hotel   Hotel  @relation(fields: [hotelId], references: [id])
 
   discountId String?
   discount   Discount? @relation(fields: [discountId], references: [id])

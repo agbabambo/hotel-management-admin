@@ -5,8 +5,9 @@ import { Column, columns } from './components/columns'
 import { DataTable } from '@/components/ui/data-table'
 import { infoData } from './data'
 
-const RoomTypesPage = async () => {
+const RoomTypesPage = async ({ params }: { params: { hotelId: string } }) => {
   const roomTypes = await db.roomType.findMany({
+    where: { hotelId: params.hotelId },
     orderBy: { createdAt: 'desc' },
     include: { amenity_RoomTypes: { include: { amenity: true } } },
   })
