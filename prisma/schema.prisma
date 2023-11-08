@@ -67,7 +67,6 @@ model User {
 
   bookings Booking[]
   votes    Vote[]
-  payments Payment[]
 }
 
 enum Role {
@@ -191,27 +190,27 @@ model Amenity_Hotel {
 }
 
 model Booking_Room {
+  id        String  @id @default(uuid())
   roomId    String
   room      Room    @relation(fields: [roomId], references: [id])
   bookingId String
   booking   Booking @relation(fields: [bookingId], references: [id])
   numAdults Int
   numKids   Int
-
-  @@id([roomId, bookingId])
 }
 
 model Booking {
-  id        String   @id @default(cuid())
-  startDate DateTime
-  endDate   DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(cuid())
+  roomCharge Int
+  startDate  DateTime
+  endDate    DateTime
+  paymentId  String // payment id
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  payments      Payment[]
   booking_rooms Booking_Room[]
 }
 
@@ -239,17 +238,4 @@ model Discount {
   updatedAt       DateTime @updatedAt
 
   roomTypes RoomType[]
-}
-
-model Payment {
-  id         String   @id @default(cuid())
-  roomCharge Int
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  // TODO: research more
-
-  userId    String
-  user      User    @relation(fields: [userId], references: [id])
-  bookingId String
-  booking   Booking @relation(fields: [bookingId], references: [id])
 }

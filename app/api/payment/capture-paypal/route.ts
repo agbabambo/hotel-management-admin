@@ -1,8 +1,8 @@
-import { db } from '@/lib/db'
-import * as paypal from '@/lib/paypal-api'
-import { toObject } from '@/lib/query'
 import { NextResponse } from 'next/server'
 import { DateRange } from 'react-day-picker'
+
+import { db } from '@/lib/db'
+import * as paypal from '@/lib/paypal-api'
 
 type IRoom = {
   id: string
@@ -14,6 +14,7 @@ type IRoom = {
 
 export async function POST(req: Request) {
   try {
+    console.log('how many times?????')
     const body = await req.json()
 
     const userId: string = body.userId
@@ -27,9 +28,19 @@ export async function POST(req: Request) {
     if (!captureData.id)
       return new NextResponse('Payment failed', { status: 500 })
 
+    // TODO: fix later
+    reservation.forEach(async (res) => {
+      const availableRoom = await db.room.findFirst({
+        where: { status: 'empty', roomType: { id: res.id } },
+      })
+      if (availableRoom) return new NextResponse('Sold out', { status: 500 })
+    })
+
     const booking = await db.booking.create({
       data: {
         userId,
+        roomCharge: roomCharge,
+        paymentId: captureData.id,
         startDate: dateRange.from!,
         endDate: dateRange.to!,
       },
@@ -55,15 +66,6 @@ export async function POST(req: Request) {
           data: { status: 'booking' },
         })
       }
-    })
-
-    await db.payment.create({
-      data: {
-        id: captureData.id,
-        roomCharge: roomCharge,
-        userId,
-        bookingId: booking.id,
-      },
     })
 
     return NextResponse.json('OK')

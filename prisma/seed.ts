@@ -17,10 +17,10 @@ const main = async () => {
     // await db.amenity_Hotel.createMany({ data: amenity_Hotels })
     // await db.roomType.createMany({ data: roomTypes })
     // await db.amenity_RoomType.createMany({ data: amenity_RoomTypes })
-    // @ts-ignore
+    // // @ts-ignore
     // await db.room.createMany({ data: rooms })
     // await db.discount.createMany({ data: discounts })
-    // await db.user.createMany({ data: users })
+    await db.user.createMany({ data: users })
     // ********** DELETE *******
     // await db.amenity_RoomType.deleteMany()
     // await db.amenity_Hotel.deleteMany()

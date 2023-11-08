@@ -20,7 +20,7 @@ export const users = [
     address: 'Mars',
     firstName: 'Tree',
     lastName: 'Leaf',
-    password: bcrypt.hash('tree12345', 10),
+    password: bcrypt.hashSync('tree12345', 10),
     phoneNumber: '123456789',
     role: Role.MEMBER,
   },

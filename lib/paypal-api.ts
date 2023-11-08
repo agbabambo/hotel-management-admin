@@ -1,11 +1,11 @@
 import axios from 'axios'
 
-const base = 'https://api-m.sandbox.paypal.com'
+const PAYPAL_URL = 'https://api-m.sandbox.paypal.com'
 
 export async function createOrder({ cost }: { cost: string }) {
   try {
     const accessToken = await generateAccessToken()
-    const url = `${base}/v2/checkout/orders`
+    const url = `${PAYPAL_URL}/v2/checkout/orders`
 
     const res = await axios.post(
       url,
@@ -31,7 +31,7 @@ export async function createOrder({ cost }: { cost: string }) {
 export async function capturePayment(orderId: string) {
   try {
     const accessToken = await generateAccessToken()
-    const url = `${base}/v2/checkout/orders/${orderId}/capture`
+    const url = `${PAYPAL_URL}/v2/checkout/orders/${orderId}/capture`
     const res = await axios.post(url, null, {
       headers: {
         'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export async function generateAccessToken(): Promise<string> {
     ).toString('base64')
 
     const res = await axios.post(
-      `${base}/v1/oauth2/token`,
+      `${PAYPAL_URL}/v1/oauth2/token`,
       { grant_type: 'client_credentials' },
       {
         headers: {
