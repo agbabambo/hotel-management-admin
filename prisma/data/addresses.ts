@@ -1,7 +1,4 @@
-import { Address } from '@prisma/client'
-
-// 3 addresses
-export const addresses: Address[] = [
+export const addresses = [
   {
     id: 'address-01',
     phone: '0356543942',
@@ -31,5 +28,15 @@ export const addresses: Address[] = [
     province: 48,
     district: 491,
     ward: 20215,
+  },
+  {
+    id: 'address-user-01',
+    phone: '123456789',
+    addressLine: 'London',
+  },
+  {
+    id: 'address-user-02',
+    phone: '123456789',
+    addressLine: 'Beijing',
   },
 ]

@@ -18,15 +18,22 @@ export async function POST(req: Request) {
 
     const hashedPassword = await bcrypt.hash(body.password, 10)
 
+    const address = await db.address.create({
+      data: {
+        addressLine: body.address,
+        phone: body.phoneNumber,
+      },
+    })
+
     await db.user.create({
       data: {
         address: body.address,
         firstName: body.firstName,
         lastName: body.lastName,
-        phoneNumber: body.phoneNumber,
         email: body.email,
         password: hashedPassword,
         role: Role.MEMBER,
+        addressId: address.id,
       },
     })
 
