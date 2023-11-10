@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { toast } from '@/components/ui/use-toast'
 import { signIn } from 'next-auth/react'
 import axios from 'axios'
 import Link from 'next/link'
+
 import { cn } from '@/lib/utils'
 import {
   Form,
@@ -18,6 +18,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { toast } from '@/components/ui/use-toast'
 import { Input } from '@/components/ui/input'
 import { Icons } from '@/components/Icons'
 import { Button, buttonVariants } from '@/components/ui/button'

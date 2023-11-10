@@ -9,9 +9,9 @@ export async function POST(req: Request) {
 
     const body = await req.json()
 
-    const { name, status, roomTypeId, hotelId } = body
+    const { name, status, roomTypeId } = body
 
-    if (!name || !status || !roomTypeId || !hotelId) {
+    if (!name || !status || !roomTypeId) {
       return new NextResponse('All fields are required', { status: 400 })
     }
 
@@ -26,7 +26,6 @@ export async function POST(req: Request) {
         name,
         status,
         roomTypeId,
-        hotelId,
       },
     })
 

@@ -1,9 +1,10 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-import { ChevronLeftIcon } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { ChevronLeftIcon } from 'lucide-react'
+
+import { Button } from '@/components/ui/button'
 
 const Error = ({}) => {
   const router = useRouter()

@@ -19,9 +19,8 @@ export async function GET(req: Request) {
         },
       },
     })
-    return NextResponse.json(bookings)
 
-    return NextResponse.json({ hmm: 'hi there' })
+    return NextResponse.json(bookings)
   } catch (err) {
     return knownErrHandler(err, 'ROOM_TYPE_GET')
   }

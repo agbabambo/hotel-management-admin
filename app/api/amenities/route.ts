@@ -1,7 +1,8 @@
-import { getAuthSession } from '@/lib/auth'
-import { db } from '@/lib/db'
 import { Role } from '@prisma/client'
 import { NextResponse } from 'next/server'
+
+import { getAuthSession } from '@/lib/auth'
+import { db } from '@/lib/db'
 
 export async function POST(req: Request) {
   try {
