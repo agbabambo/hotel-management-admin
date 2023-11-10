@@ -20,7 +20,7 @@ const UsersPage = async () => {
       : '',
     address: item.address.addressLine,
     role: item.role,
-    createdDate: format(new Date(item.createdAt), 'MMMM do, yyyy'),
+    createdAt: format(new Date(item.createdAt), 'MMMM do, yyyy'),
   }))
 
   return (

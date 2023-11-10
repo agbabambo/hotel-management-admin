@@ -12,6 +12,7 @@ export type Column = {
   sex: string
   birthday: string
   address: string
+  createdAt: string
   role: Role
 }
 

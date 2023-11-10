@@ -19,9 +19,14 @@ const MainPage = async () => {
     orderBy: { createdAt: 'desc' },
   })
 
+  const feedbacks = await db.feedback.findMany({
+    orderBy: { createdAt: 'desc' },
+    include: { user: true },
+  })
+
   return (
     <div className='h-full'>
-      <Dashboard bookings={bookings} users={users} />
+      <Dashboard bookings={bookings} users={users} feedbacks={feedbacks} />
     </div>
   )
 }

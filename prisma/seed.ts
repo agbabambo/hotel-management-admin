@@ -11,6 +11,8 @@ import { users } from './data/user'
 
 const main = async () => {
   try {
+    // don't change order
+
     // **********************************
     // **********    INSERT    **********
     // **********************************

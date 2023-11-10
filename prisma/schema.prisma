@@ -71,8 +71,9 @@ model User {
 
   role Role @default(CUSTOMER)
 
-  bookings Booking[]
-  votes    Vote[]
+  bookings  Booking[]
+  votes     Vote[]
+  feedbacks Feedback[]
 }
 
 enum Sex {
@@ -250,4 +251,15 @@ model Discount {
   updatedAt       DateTime @updatedAt
 
   roomTypes RoomType[]
+}
+
+model Feedback {
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isViewed  Boolean  @default(false)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 }
