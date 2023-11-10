@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { FC } from 'react'
 import {
   LineChart,
   Line,
@@ -12,58 +12,17 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 
-const data = [
-  {
-    name: 'Page b',
-    uv: 4000,
-    pv: 2400,
-  },
-  {
-    name: 'Page B',
-    uv: 3000,
-    pv: 1398,
-  },
-  {
-    name: 'Page C',
-    uv: 2000,
-    pv: 9800,
-  },
-  {
-    name: 'Page D',
-    uv: 2780,
-    pv: 3908,
-    amt: 2000,
-  },
-  {
-    name: 'Page E',
-    uv: 1890,
-    pv: 4800,
-    amt: 2181,
-  },
-  {
-    name: 'Page F',
-    uv: 2390,
-    pv: 3800,
-    amt: 2500,
-  },
-  {
-    name: 'Page G',
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
-  },
-]
-
-import { FC } from 'react'
-
-interface MainChartProps {
-  label1: string
-  label2: string
-  dataKey1: string
-  dataKey2: string
+export type ChartData = {
+  curr: number
+  prev: number
+  date: string
 }
 
-const Chart: FC<MainChartProps> = ({ label1, label2, dataKey1, dataKey2 }) => {
+interface MainChartProps {
+  data: ChartData[]
+}
+
+const Chart: FC<MainChartProps> = ({ data }) => {
   return (
     <div className='rounded-md bg-slate-100 p-3'>
       <div className='font-semibold text-xl text-center tracking-wide text-slate-700'>
@@ -84,22 +43,22 @@ const Chart: FC<MainChartProps> = ({ label1, label2, dataKey1, dataKey2 }) => {
             }}
           >
             <CartesianGrid strokeDasharray='3 3' />
-            <XAxis dataKey='name' />
+            <XAxis dataKey='date' />
             <YAxis />
             <Tooltip />
             <Legend />
             <Line
               type='monotone'
-              name={label2}
-              dataKey={dataKey2}
+              name='Last 7 day'
+              dataKey='prev'
               stroke='#0d9488'
               activeDot={{ r: 8 }}
             />
             <Line
               className=''
               type='monotone'
-              name={label1}
-              dataKey={dataKey1}
+              name='Current'
+              dataKey='curr'
               textAnchor='curre'
               stroke='#ef4444'
             />

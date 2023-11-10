@@ -39,4 +39,9 @@ export const addresses = [
     phone: '123456789',
     addressLine: 'Beijing',
   },
+  {
+    id: 'address-user-03',
+    phone: '123456789',
+    addressLine: 'Mars',
+  },
 ]

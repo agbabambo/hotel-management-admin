@@ -90,6 +90,9 @@ interface FormProps {
   amenities: Amenity[]
 }
 
+type AddressVm = { name: string; code: number }
+
+// TODO: This is stupid
 const EditForm: FC<FormProps> = ({ initialData, amenities }) => {
   const params = useParams()
   const router = useRouter()
@@ -108,13 +111,9 @@ const EditForm: FC<FormProps> = ({ initialData, amenities }) => {
     : `${infoData.label} created`
   const action = initialData ? 'Save changes' : 'Create'
 
-  const [provinces, setProvinces] = useState<{ name: string; code: number }[]>(
-    []
-  )
-  const [districts, setDistricts] = useState<{ name: string; code: number }[]>(
-    []
-  )
-  const [wards, setWards] = useState<{ name: string; code: number }[]>([])
+  const [provinces, setProvinces] = useState<AddressVm[]>([])
+  const [districts, setDistricts] = useState<AddressVm[]>([])
+  const [wards, setWards] = useState<AddressVm[]>([])
 
   const defaultValues = initialData
     ? {

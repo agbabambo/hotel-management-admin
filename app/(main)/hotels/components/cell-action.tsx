@@ -3,7 +3,7 @@
 import { FC, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import axios from 'axios'
-import { Edit, MoreHorizontal, Trash } from 'lucide-react'
+import { Edit, EditIcon, MoreHorizontal, Trash } from 'lucide-react'
 
 import { toast } from '@/components/ui/use-toast'
 import { infoData } from '../data'
@@ -50,7 +50,17 @@ const CellAction: FC<CellActionProps> = ({ id }) => {
 
   return (
     <>
-      <AlertDialog open={open} onOpenChange={setOpen}>
+      <div className='flex gap-3'>
+        <Button
+          className='p-2 h-8 w-8 bg-emerald-600 hover:bg-emerald-600/90'
+          size='sm'
+          onClick={() => router.push(`${pathname}/${id}`)}
+        >
+          <EditIcon className='w-4 h-4 text-white' />
+        </Button>
+      </div>
+
+      {/* <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
@@ -81,7 +91,7 @@ const CellAction: FC<CellActionProps> = ({ id }) => {
             <Trash className='mr-2 h-4 w-4' /> Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu>
+      </DropdownMenu> */}
     </>
   )
 }

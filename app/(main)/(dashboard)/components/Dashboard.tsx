@@ -7,21 +7,20 @@ import {
   LandmarkIcon,
   Users2Icon,
 } from 'lucide-react'
-
-import GrowthCard from './GrowthCard'
-import Chart from './Chart'
-import TimelineSelect, { Timeline } from './TimelineSelect'
 import { differenceInDays } from 'date-fns'
 
-type Booking = { roomCharge: number; createdAt: Date }
-type User = { createdAt: Date }
+import GrowthCard from './GrowthCard'
+import Chart, { ChartData } from './Chart'
+import TimelineSelect, { Timeline } from './TimelineSelect'
+import { get7DayChartData } from '../utils/get7DayChartData'
+
+export type Booking = { roomCharge: number; createdAt: Date }
+export type User = { createdAt: Date }
 
 interface DashboardProps {
   bookings: Booking[]
   users: User[]
 }
-
-type ChartData = { name: string; prev: number; curr: number }[]
 
 const Dashboard: FC<DashboardProps> = ({ bookings, users }) => {
   const [timeline, setTimeline] = useState<Timeline>('ALL')
@@ -29,13 +28,16 @@ const Dashboard: FC<DashboardProps> = ({ bookings, users }) => {
   const [income, setIncome] = useState<number>(0)
   const [userNum, setUserNum] = useState<number>(0)
   const [bookingNum, setBookingNum] = useState<number>(0)
-  const [chartData, setChartData] = useState<ChartData>([])
+  const [chartData, setChartData] = useState<ChartData[]>(
+    get7DayChartData(bookings)
+  )
 
   const onTotal = () => {
     const income = bookings.reduce((p, c) => c.roomCharge + p, 0)
     setIncome(income)
     setBookingNum(bookings.length)
     setUserNum(users.length)
+    setChartData(get7DayChartData(bookings))
   }
 
   const onSevenDay = () => {
@@ -45,8 +47,10 @@ const Dashboard: FC<DashboardProps> = ({ bookings, users }) => {
     const filteredBookings = bookings.filter(
       (booking) => differenceInDays(booking.createdAt, new Date()) <= 7
     )
-
-    console.log(filteredUsers)
+    setIncome(filteredBookings.reduce((p, c) => p + c.roomCharge, 0))
+    setBookingNum(filteredBookings.length)
+    setUserNum(filteredUsers.length)
+    setChartData(get7DayChartData(bookings))
   }
 
   const onOneMonth = () => {}
@@ -111,12 +115,7 @@ const Dashboard: FC<DashboardProps> = ({ bookings, users }) => {
         </div>
 
         <div className='mt-9'>
-          <Chart
-            label1='Last month'
-            dataKey1='uv'
-            dataKey2='pv'
-            label2='Current month'
-          />
+          <Chart data={chartData} />
         </div>
       </main>
     </div>

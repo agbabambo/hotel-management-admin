@@ -1,18 +1,33 @@
-'use client'
-
 import { FC } from 'react'
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+import { User } from 'next-auth'
+import Image from 'next/image'
+import { AvatarProps } from '@radix-ui/react-avatar'
 
-interface UserAvatarProps extends React.HTMLAttributes<HTMLDivElement> {
-  src?: string
-  alt?: string
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { UserIcon } from 'lucide-react'
+
+interface UserAvatarProps extends AvatarProps {
+  user: Pick<User, 'name' | 'image'>
 }
 
-const UserAvatar: FC<UserAvatarProps> = ({ src, alt = 'avatar', ...props }) => {
+const UserAvatar: FC<UserAvatarProps> = ({ user, ...props }) => {
   return (
     <Avatar {...props}>
-      <AvatarImage alt={alt} src={src} />
-      <AvatarFallback>NN</AvatarFallback>
+      {user.image ? (
+        <div className='relative aspect-square h-full w-full'>
+          <Image
+            fill
+            src={user.image}
+            alt='profile picture'
+            referrerPolicy='no-referrer'
+          />
+        </div>
+      ) : (
+        <AvatarFallback>
+          <span className='sr-only'>{user.name}</span>
+          <UserIcon className='h-4 w-4' />
+        </AvatarFallback>
+      )}
     </Avatar>
   )
 }

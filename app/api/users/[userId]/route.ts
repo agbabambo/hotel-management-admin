@@ -1,6 +1,7 @@
-import { db } from '@/lib/db'
-import { Sex } from '@prisma/client'
 import { NextResponse } from 'next/server'
+
+import { db } from '@/lib/db'
+import { getAuthSession } from '@/lib/auth'
 
 export async function GET(
   req: Request,
@@ -21,6 +22,7 @@ export async function GET(
   }
 }
 
+// TODO: change to patch later
 export async function POST(
   req: Request,
   { params }: { params: { userId: string } }
@@ -54,6 +56,38 @@ export async function POST(
     return NextResponse.json({ message: 'Updated successfully' })
   } catch (err) {
     console.log('[USER_ID_POST]', err)
+    return new NextResponse('Internal error', { status: 500 })
+  }
+}
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: { userId: string } }
+) {
+  try {
+    const userAuth = await getAuthSession()
+    console.log(userAuth)
+
+    if (userAuth?.user.role !== 'ADMIN')
+      return NextResponse.json({
+        message: 'User do not have permission to perform this action',
+      })
+
+    const body = await req.json()
+
+    const user = await db.user.findUnique({ where: { id: params.userId } })
+
+    if (!user || user.id === userAuth.user.id)
+      return NextResponse.json({ message: 'Invalid user' })
+
+    await db.user.update({
+      where: { id: params.userId },
+      data: { role: body.role },
+    })
+
+    return NextResponse.json({ message: 'Updated successfully' })
+  } catch (err) {
+    console.log('[USER_ID_PATCH]', err)
     return new NextResponse('Internal error', { status: 500 })
   }
 }

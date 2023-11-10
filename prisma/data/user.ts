@@ -1,4 +1,4 @@
-import { Role, User } from '@prisma/client'
+import { Role } from '@prisma/client'
 import bcrypt from 'bcrypt'
 
 export const users = [
@@ -20,6 +20,16 @@ export const users = [
     firstName: 'Tree',
     lastName: 'Leaf',
     password: bcrypt.hashSync('tree12345', 10),
-    role: Role.MEMBER,
+    role: Role.CUSTOMER,
+  },
+  {
+    id: 'user-03',
+    name: 'sky',
+    email: 'sky@mail.com',
+    addressId: 'address-user-03',
+    firstName: 'Sky',
+    lastName: 'Earth',
+    password: bcrypt.hashSync('sky12345', 10),
+    role: Role.STAFF,
   },
 ]

@@ -10,6 +10,8 @@ import {
   LucideIcon,
   MonitorIcon,
   PercentIcon,
+  User2Icon,
+  Users2Icon,
 } from 'lucide-react'
 import Link from 'next/link'
 import { useParams, usePathname } from 'next/navigation'
@@ -62,6 +64,12 @@ const Sidebar = () => {
       label: 'Home',
       active: pathname === '/',
       Icon: HomeIcon,
+    },
+    {
+      href: '/users',
+      label: 'User',
+      active: pathname === '/users',
+      Icon: Users2Icon,
     },
     {
       href: '/hotels',
@@ -192,7 +200,7 @@ const Sidebar = () => {
               )}
             />
           </div>
-          <div className='text-[0.6rem] font-semibold text-zinc-500 h-5'>
+          <div className='text-xs font-semibold text-zinc-500 h-5'>
             {open && `©${new Date().getFullYear()} Winterfall`}
           </div>
         </nav>

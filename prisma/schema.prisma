@@ -69,7 +69,7 @@ model User {
   addressId String
   address   Address @relation(fields: [addressId], references: [id])
 
-  role Role @default(MEMBER)
+  role Role @default(CUSTOMER)
 
   bookings Booking[]
   votes    Vote[]
@@ -82,7 +82,7 @@ enum Sex {
 }
 
 enum Role {
-  MEMBER
+  CUSTOMER
   STAFF
   ADMIN
 }
