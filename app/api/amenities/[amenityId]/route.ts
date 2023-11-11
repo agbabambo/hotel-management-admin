@@ -1,15 +1,26 @@
-import { db } from '@/lib/db'
 import { NextResponse } from 'next/server'
+
+import { requiredRoleApi } from '@/helpers/requiredRoleApi'
+import { db } from '@/lib/db'
 
 export async function PATCH(
   req: Request,
   { params }: { params: { amenityId: string } }
 ) {
   try {
+    await requiredRoleApi(['ADMIN', 'STAFF'])
+
     const { name, description } = await req.json()
 
     if (!params.amenityId)
       return new NextResponse('Amenity ID missing', { status: 400 })
+
+    const dbAmenity = await db.amenity.findUnique({
+      where: { id: params.amenityId },
+    })
+
+    if (!dbAmenity)
+      return new NextResponse('Amenity not found', { status: 404 })
 
     const amenity = await db.amenity.update({
       where: { id: params.amenityId },
@@ -24,14 +35,26 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  req: Request,
+  _: Request,
   { params }: { params: { amenityId: string } }
 ) {
   try {
+    await requiredRoleApi(['ADMIN', 'STAFF'])
+
     if (!params.amenityId)
       return new NextResponse('Amenity ID missing', { status: 400 })
 
+    const dbAmenity = await db.amenity.findUnique({
+      where: { id: params.amenityId },
+    })
+    if (!dbAmenity)
+      return new NextResponse('Amenity not found', { status: 404 })
+
     await db.amenity_RoomType.deleteMany({
+      where: { amenityId: params.amenityId },
+    })
+
+    await db.amenity_Hotel.deleteMany({
       where: { amenityId: params.amenityId },
     })
 

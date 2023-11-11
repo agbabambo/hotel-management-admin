@@ -7,25 +7,8 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
-import {
-  CheckIcon,
-  ChevronLeftIcon,
-  PlusCircleIcon,
-  TrashIcon,
-} from 'lucide-react'
+import { CheckIcon, ChevronLeftIcon, PlusCircleIcon } from 'lucide-react'
 
-import { infoData } from '../data'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { toast } from '@/components/ui/use-toast'
 import { Separator } from '@/components/ui/separator'
@@ -59,13 +42,7 @@ import ImageUpload from '@/components/ui/image-upload'
 import { DaNangLatLng } from '@/constants/DaNangLatLng'
 import MapMarkerInput from '@/components/map/MapMarkerInput'
 import { Combobox } from '@/components/ui/combobox-form'
-import {
-  getDistricts,
-  getProvinces,
-  getWards,
-} from '../services/AddressService'
-
-const PROVINCE_API_URL = 'https://provinces.open-api.vn/api'
+import * as AddressService from '../services/AddressService'
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -100,15 +77,9 @@ const EditForm: FC<FormProps> = ({ initialData, amenities }) => {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const title = initialData
-    ? `Edit ${infoData.label}`
-    : `Create ${infoData.label}`
-  const description = initialData
-    ? `Edit a ${infoData.label}`
-    : `Add a new ${infoData.label}`
-  const toastMessage = initialData
-    ? `${infoData.label} updated`
-    : `${infoData.label} created`
+  const title = initialData ? `Edit hotel` : `Create hotel`
+  const description = initialData ? `Edit a hotel` : `Add a new hotel`
+  const toastMessage = initialData ? `Hotel updated` : `Hotel created`
   const action = initialData ? 'Save changes' : 'Create'
 
   const [provinces, setProvinces] = useState<AddressVm[]>([])
@@ -119,11 +90,11 @@ const EditForm: FC<FormProps> = ({ initialData, amenities }) => {
     ? {
         name: initialData.name,
         description: initialData.description,
-        coordinate: initialData.address.coordinate,
+        coordinate: initialData.address.coordinate as string,
         addressLine: initialData.address.addressLine,
-        ward: initialData.address.ward,
-        district: initialData.address.district,
-        province: initialData.address.province,
+        ward: initialData.address.ward!,
+        district: initialData.address.district!,
+        province: initialData.address.province!,
         phoneNumber: initialData.address.phone,
         images: initialData.images,
         amenities: initialData.amenity_Hotels.map((ah) => ah.amenityId),
@@ -147,27 +118,31 @@ const EditForm: FC<FormProps> = ({ initialData, amenities }) => {
   })
 
   useEffect(() => {
-    getProvinces().then((data) => {
+    AddressService.getProvinces().then((data) => {
       setProvinces(data)
     })
 
     if (initialData?.address.province) {
-      getDistricts(initialData.address.province).then((data) => {
-        setDistricts(data)
-      })
-      getWards(initialData.address.district).then((data) => {
-        setWards(data)
-      })
+      if (initialData.address) {
+        AddressService.getDistricts(initialData.address.province).then(
+          (data) => {
+            setDistricts(data)
+          }
+        )
+        AddressService.getWards(initialData.address.district!).then((data) => {
+          setWards(data)
+        })
+      }
     }
   }, [initialData])
 
   const onProvinceChange = (provinceCode: number) => {
     setWards([])
-    getDistricts(provinceCode).then((data) => setDistricts(data))
+    AddressService.getDistricts(provinceCode).then((data) => setDistricts(data))
   }
 
   const onDistrictChange = (districtCode: number) => {
-    getWards(districtCode).then((data) => setWards(data))
+    AddressService.getWards(districtCode).then((data) => setWards(data))
   }
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
@@ -175,12 +150,12 @@ const EditForm: FC<FormProps> = ({ initialData, amenities }) => {
       setLoading(true)
 
       if (initialData) {
-        await axios.patch(`/api/${infoData.pluralLink}/${params.hotelId}`, data)
+        await axios.patch(`/api/hotels/${params.hotelId}`, data)
       } else {
-        await axios.post(`/api/${infoData.pluralLink}`, data)
+        await axios.post(`/api/hotels`, data)
       }
       router.refresh()
-      router.push(`/${infoData.pluralLink}`)
+      router.push(`/hotels`)
       toast({ description: toastMessage })
     } catch (err: any) {
       console.log(err)
@@ -193,10 +168,10 @@ const EditForm: FC<FormProps> = ({ initialData, amenities }) => {
   const onDelete = async () => {
     try {
       setLoading(true)
-      await axios.delete(`/api/${infoData.pluralLink}/${params.hotelId}`)
+      await axios.delete(`/api/hotels/${params.hotelId}`)
       router.refresh()
-      router.push(`/${infoData.pluralLink}`)
-      toast({ description: `${infoData.label} deleted` })
+      router.push(`/hotels`)
+      toast({ description: `Hotel deleted` })
     } catch (err: any) {
       console.log(err)
       toast({ variant: 'destructive', description: err?.response?.data })
@@ -226,29 +201,6 @@ const EditForm: FC<FormProps> = ({ initialData, amenities }) => {
           <h1 className='tracking-tight text-3xl font-semibold'>{title}</h1>
           <p>{description}</p>
         </div>
-        {initialData && (
-          <AlertDialog open={open} onOpenChange={() => setOpen((o) => !o)}>
-            <AlertDialogTrigger asChild>
-              <Button disabled={loading} variant='destructive' size='sm'>
-                <TrashIcon className='w-4 h-4' />
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={onDelete}>
-                  Continue
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        )}
       </div>
       <Separator className='mt-2' />
 

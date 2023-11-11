@@ -12,6 +12,9 @@ import {
   getSortedRowModel,
   SortingState,
 } from '@tanstack/react-table'
+import { Plus, Sheet } from 'lucide-react'
+import { usePathname, useRouter } from 'next/navigation'
+
 import { Input } from './input'
 import {
   Table,
@@ -22,19 +25,19 @@ import {
   TableRow,
 } from './table'
 import { Button } from './button'
-import { Plus, Sheet } from 'lucide-react'
-import { usePathname, useRouter } from 'next/navigation'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   searchKey: string
+  newButton?: boolean
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   searchKey,
+  newButton = true,
 }: DataTableProps<TData, TValue>) {
   const router = useRouter()
   const pathname = usePathname()
@@ -69,24 +72,23 @@ export function DataTable<TData, TValue>({
           className='max-w-sm'
         />
 
-        {/* TODO: delete comment late */}
-        {/* {link && link.length !== 0 && ( */}
-        <div className='space-x-4'>
-          <Button
-            variant='blue'
-            onClick={() => router.push(`${pathname}/new`)}
-            size='sm'
-          >
-            <Plus className='w-4 h-4 mr-2' />
-            Add new
-          </Button>
+        {newButton && (
+          <div className='space-x-4'>
+            <Button
+              variant='blue'
+              onClick={() => router.push(`${pathname}/new`)}
+              size='sm'
+            >
+              <Plus className='w-4 h-4 mr-2' />
+              Add new
+            </Button>
 
-          <Button variant='blue' onClick={() => {}} size='sm'>
-            <Sheet className='w-4 h-4 mr-2' />
-            Export to CSV
-          </Button>
-        </div>
-        {/* )} */}
+            <Button variant='blue' onClick={() => {}} size='sm'>
+              <Sheet className='w-4 h-4 mr-2' />
+              Export to CSV
+            </Button>
+          </div>
+        )}
       </div>
       <div className='rounded-md border'>
         <Table>

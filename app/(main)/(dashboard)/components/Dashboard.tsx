@@ -9,12 +9,12 @@ import {
 } from 'lucide-react'
 import { differenceInDays } from 'date-fns'
 import { User as UserDb } from '@prisma/client'
+import { Feedback } from '@prisma/client'
 
 import GrowthCard from './GrowthCard'
 import Chart, { ChartData } from './Chart'
 import TimelineSelect, { Timeline } from './TimelineSelect'
 import { get7DayChartData } from '../utils/get7DayChartData'
-import { Feedback } from '@prisma/client'
 
 export type Booking = { roomCharge: number; createdAt: Date }
 export type User = { createdAt: Date }

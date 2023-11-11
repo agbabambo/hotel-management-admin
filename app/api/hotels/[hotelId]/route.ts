@@ -1,7 +1,7 @@
-import { adminCheck } from '@/helpers/adminCheck'
-import { knownErrHandler } from '@/helpers/knownErrHanler'
-import { db } from '@/lib/db'
 import { NextResponse } from 'next/server'
+
+import { db } from '@/lib/db'
+import { requiredRoleApi } from '@/helpers/requiredRoleApi'
 
 export async function GET(
   _: Request,
@@ -19,7 +19,8 @@ export async function GET(
 
     return NextResponse.json(hotel)
   } catch (err) {
-    return knownErrHandler(err, 'HOTEL_ID_GET')
+    console.log('[HOTEL_ID_GET]', err)
+    return new NextResponse('Internal error', { status: 500 })
   }
 }
 
@@ -28,7 +29,7 @@ export async function PATCH(
   { params }: { params: { hotelId: string } }
 ) {
   try {
-    await adminCheck()
+    await requiredRoleApi(['ADMIN', 'STAFF'])
 
     const body = await req.json()
     const {
@@ -90,7 +91,8 @@ export async function PATCH(
 
     return NextResponse.json(hotel)
   } catch (err) {
-    return knownErrHandler(err, 'HOTEL_PATCH')
+    console.log('[HOTEL_ID_GET]', err)
+    return new NextResponse('Internal error', { status: 500 })
   }
 }
 
@@ -99,7 +101,7 @@ export async function DELETE(
   { params }: { params: { hotelId: string } }
 ) {
   try {
-    await adminCheck()
+    await requiredRoleApi(['ADMIN', 'STAFF'])
 
     const rooms = await db.room.findMany({
       where: { roomTypeId: params.hotelId },
@@ -119,6 +121,7 @@ export async function DELETE(
 
     return NextResponse.json('DELETED')
   } catch (err) {
-    return knownErrHandler(err, 'HOTEL_DELETE')
+    console.log('[HOTEL_ID_GET]', err)
+    return new NextResponse('Internal error', { status: 500 })
   }
 }

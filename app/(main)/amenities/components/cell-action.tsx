@@ -2,17 +2,10 @@
 
 import axios from 'axios'
 import { useState } from 'react'
-import { Edit, MoreHorizontal, Trash } from 'lucide-react'
+import { EditIcon, TrashIcon } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 
 import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { toast } from '@/components/ui/use-toast'
 import {
   AlertDialog,
@@ -24,7 +17,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { infoData } from '../data'
 
 interface CellActionProps {
   id: string
@@ -38,8 +30,8 @@ export const CellAction: React.FC<CellActionProps> = ({ id }) => {
 
   const onConfirm = async () => {
     try {
-      await axios.delete(`/api/${infoData.pluralLink}/${id}`)
-      toast({ description: `${infoData.label} deleted` })
+      await axios.delete(`/api/amenities/${id}`)
+      toast({ description: `Amenity deleted` })
       router.refresh()
     } catch (error) {
       toast({
@@ -53,7 +45,25 @@ export const CellAction: React.FC<CellActionProps> = ({ id }) => {
 
   return (
     <>
-      <AlertDialog open={open} onOpenChange={() => setOpen((o) => !o)}>
+      <div className='flex gap-3'>
+        <Button
+          className='p-2 h-8 w-8 bg-emerald-600 hover:bg-emerald-600/90'
+          size='sm'
+          onClick={() => router.push(`${pathname}/${id}`)}
+        >
+          <EditIcon className='w-4 h-4 text-white' />
+        </Button>
+
+        <Button
+          className='p-2 h-8 w-8 bg-rose-600 hover:bg-rose-600/90'
+          size='sm'
+          onClick={() => setOpen(true)}
+        >
+          <TrashIcon className='w-4 h-4 text-white' />
+        </Button>
+      </div>
+
+      <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
@@ -63,28 +73,15 @@ export const CellAction: React.FC<CellActionProps> = ({ id }) => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={onConfirm}>Continue</AlertDialogAction>
+            <AlertDialogAction
+              onClick={onConfirm}
+              className='bg-rose-500 hover:bg-rose-500/90 text-white'
+            >
+              Delete
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant='ghost' className='h-8 w-8 p-0'>
-            <span className='sr-only'>Open menu</span>
-            <MoreHorizontal className='h-4 w-4' />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align='end'>
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => router.push(`/${pathname}/${id}`)}>
-            <Edit className='mr-2 h-4 w-4' /> Update
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className='mr-2 h-4 w-4' /> Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
     </>
   )
 }

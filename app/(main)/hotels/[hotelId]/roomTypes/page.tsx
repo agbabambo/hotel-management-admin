@@ -3,7 +3,6 @@ import { format } from 'date-fns'
 import { db } from '@/lib/db'
 import { Column, columns } from './components/columns'
 import { DataTable } from '@/components/ui/data-table'
-import { infoData } from './data'
 
 const RoomTypesPage = async ({ params }: { params: { hotelId: string } }) => {
   const roomTypes = await db.roomType.findMany({
@@ -27,9 +26,9 @@ const RoomTypesPage = async ({ params }: { params: { hotelId: string } }) => {
   return (
     <div className='p-10'>
       <h1 className='tracking-tight text-3xl font-semibold'>
-        {infoData.label} ({formattedData.length})
+        Room Type ({formattedData.length})
       </h1>
-      <p>Manage {infoData.label}</p>
+      <p>Manage Room Type</p>
 
       <hr className='my-6' />
 

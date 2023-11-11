@@ -1,11 +1,13 @@
-import { NextResponse } from 'next/server'
 import bcrypt from 'bcrypt'
-import { db } from '@/lib/db'
+import { NextResponse } from 'next/server'
 import { Role } from '@prisma/client'
+
+import { db } from '@/lib/db'
 
 export async function POST(req: Request) {
   try {
     const body = await req.json()
+    console.log('REGISTER, ', body)
 
     const user = await db.user.findUnique({
       where: { email: body.email },
@@ -27,19 +29,16 @@ export async function POST(req: Request) {
 
     await db.user.create({
       data: {
-        address: body.address,
         firstName: body.firstName,
         lastName: body.lastName,
         email: body.email,
         password: hashedPassword,
-        role: Role.MEMBER,
+        role: Role.CUSTOMER,
         addressId: address.id,
       },
     })
 
-    // TODO: after this?
     return NextResponse.json('ok')
-    // return NextResponse.redirect('/sign-in')
   } catch (err) {
     console.log('AUTH_REGISTER_POST', err)
     return new NextResponse('Internal error', { status: 500 })

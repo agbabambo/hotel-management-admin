@@ -1,10 +1,11 @@
 'use client'
 
-import { Room, RoomType } from '@prisma/client'
 import { FC } from 'react'
-import Floor from './Floor'
-import { usePathname, useRouter } from 'next/navigation'
 import { Plus } from 'lucide-react'
+import { Room, RoomType } from '@prisma/client'
+import { usePathname, useRouter } from 'next/navigation'
+
+import Floor from './Floor'
 import { Button } from '@/components/ui/button'
 import { roomStatus } from '../data'
 

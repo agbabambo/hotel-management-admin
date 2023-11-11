@@ -4,14 +4,15 @@ import { db } from '@/lib/db'
 import { Column, columns } from './components/columns'
 import { DataTable } from '@/components/ui/data-table'
 
-const BookingPage = async ({ params }: { params: { bookingId: string } }) => {
-  const roomTypes = await db.booking.findMany({
-    where: { id: params.bookingId },
+const BookingPage = async ({ params }: { params: { hotelId: string } }) => {
+  console.log(params)
+  const bookings = await db.booking.findMany({
+    where: { id: params.hotelId },
     include: { booking_rooms: { include: { room: true } } },
     orderBy: { createdAt: 'desc' },
   })
 
-  const formattedData: Column[] = roomTypes.map((item) => ({
+  const formattedData: Column[] = bookings.map((item) => ({
     id: item.id,
     startDate: format(new Date(item.startDate), 'MMMM do, yyyy'),
     endDate: format(new Date(item.endDate), 'MMMM do, yyyy'),
@@ -28,7 +29,12 @@ const BookingPage = async ({ params }: { params: { bookingId: string } }) => {
 
       <hr className='my-6' />
 
-      <DataTable data={formattedData} columns={columns} searchKey='roomName' />
+      <DataTable
+        data={formattedData}
+        columns={columns}
+        searchKey='roomName'
+        newButton={false}
+      />
     </div>
   )
 }

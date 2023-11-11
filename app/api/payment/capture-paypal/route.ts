@@ -14,7 +14,6 @@ type IRoom = {
 
 export async function POST(req: Request) {
   try {
-    console.log('how many times?????')
     const body = await req.json()
 
     const userId: string = body.userId

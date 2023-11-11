@@ -1,17 +1,17 @@
-import { adminCheck } from '@/helpers/adminCheck'
-import { knownErrHandler } from '@/helpers/knownErrHanler'
-import { db } from '@/lib/db'
 import { NextResponse } from 'next/server'
-import queryString from 'query-string'
+
+import { db } from '@/lib/db'
+import { requiredRoleApi } from '@/helpers/requiredRoleApi'
 
 export async function GET(req: Request) {
-  const query = queryString.parse(req.url)
-
   try {
-    if (!query.hotelId) return NextResponse.json([])
+    const { searchParams } = new URL(req.url)
+    const hotelId = searchParams.get('hotelId')
+
+    if (!hotelId) return NextResponse.json([])
 
     const roomTypes = await db.roomType.findMany({
-      where: { hotelId: query.hotelId as string },
+      where: { hotelId: hotelId },
       include: {
         rooms: { include: { booking_rooms: true } },
         amenity_RoomTypes: { include: { amenity: true } },
@@ -21,13 +21,14 @@ export async function GET(req: Request) {
 
     return NextResponse.json(roomTypes)
   } catch (err) {
-    return knownErrHandler(err, 'ROOM_TYPE_GET')
+    console.log('[HOTEL_GET]', err)
+    return new NextResponse('Internal error', { status: 500 })
   }
 }
 
 export async function POST(req: Request) {
   try {
-    await adminCheck()
+    await requiredRoleApi(['ADMIN', 'STAFF'])
 
     const body = await req.json()
     const {
@@ -39,6 +40,7 @@ export async function POST(req: Request) {
       price,
       maxBookingDay,
       amenities,
+      hotelId,
     } = body
 
     if (
@@ -50,7 +52,8 @@ export async function POST(req: Request) {
       !images.length ||
       !price ||
       !maxBookingDay ||
-      !amenities.length
+      !amenities.length ||
+      !hotelId
     ) {
       return new NextResponse('All fields are required', { status: 400 })
     }
@@ -64,6 +67,7 @@ export async function POST(req: Request) {
         images,
         price,
         maxBookingDay,
+        hotelId,
         amenity_RoomTypes: {
           createMany: {
             data: amenities.map((amenityId: string) => ({ amenityId })),
@@ -74,6 +78,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(roomTypes)
   } catch (err) {
-    return knownErrHandler(err, 'ROOM_TYPE_POST')
+    console.log('[HOTEL_POST]', err)
+    return new NextResponse('Internal error', { status: 500 })
   }
 }

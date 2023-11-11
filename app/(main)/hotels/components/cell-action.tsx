@@ -3,10 +3,9 @@
 import { FC, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import axios from 'axios'
-import { Edit, EditIcon, MoreHorizontal, Trash } from 'lucide-react'
+import { EditIcon, TrashIcon } from 'lucide-react'
 
 import { toast } from '@/components/ui/use-toast'
-import { infoData } from '../data'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,20 +16,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 
 interface CellActionProps {
   id: string
+  deletable: boolean
 }
 
-const CellAction: FC<CellActionProps> = ({ id }) => {
+const CellAction: FC<CellActionProps> = ({ id, deletable }) => {
   const router = useRouter()
   const pathname = usePathname()
 
@@ -38,8 +31,8 @@ const CellAction: FC<CellActionProps> = ({ id }) => {
 
   const onConfirm = async () => {
     try {
-      await axios.delete(`/api/${infoData.pluralLink}/${id}`)
-      toast({ description: `${infoData.label} deleted` })
+      await axios.delete(`/api/hotels/${id}`)
+      toast({ description: `Hotel deleted` })
       router.refresh()
     } catch (err) {
       toast({ variant: 'destructive', description: 'Something went wrong' })
@@ -58,40 +51,37 @@ const CellAction: FC<CellActionProps> = ({ id }) => {
         >
           <EditIcon className='w-4 h-4 text-white' />
         </Button>
+
+        {deletable && (
+          <Button
+            className='p-2 h-8 w-8 bg-rose-600 hover:bg-rose-600/90'
+            size='sm'
+            onClick={() => setOpen(true)}
+          >
+            <TrashIcon className='w-4 h-4 text-white' />
+          </Button>
+        )}
       </div>
 
-      {/* <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              Thi saction cannot be undone.
+              This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={onConfirm}>Continue</AlertDialogAction>
+            <AlertDialogAction
+              onClick={onConfirm}
+              className='bg-rose-600 hover:bg-rose-600/90 text-white'
+            >
+              Delete
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant='ghost' className='h-8 w-8 p-0'>
-            <span className='sr-only'>Open menu</span>
-            <MoreHorizontal className='h-4 w-4' />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align='end'>
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => router.push(`${pathname}/${id}`)}>
-            <Edit className='mr-2 h-4 w-4' /> Update
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className='mr-2 h-4 w-4' /> Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu> */}
     </>
   )
 }

@@ -2,11 +2,10 @@
 
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowDown, ArrowUp } from 'lucide-react'
+import { format } from 'date-fns'
 
 import { Button } from '@/components/ui/button'
 import CellAction from './cell-action'
-import Image from 'next/image'
-import { format } from 'date-fns'
 import ImageCarousel from '@/components/ui/image-carousel'
 
 export type Column = {
@@ -16,6 +15,7 @@ export type Column = {
   address: string
   images: string[]
   createdAt: Date
+  deletable: boolean
 }
 
 export const columns: ColumnDef<Column>[] = [
@@ -75,6 +75,8 @@ export const columns: ColumnDef<Column>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row }) => <CellAction id={row.original.id} />,
+    cell: ({ row }) => (
+      <CellAction id={row.original.id} deletable={row.original.deletable} />
+    ),
   },
 ]

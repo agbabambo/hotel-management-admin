@@ -2,9 +2,10 @@
 
 import { FC } from 'react'
 import { Room } from '@prisma/client'
+import { PlusCircleIcon } from 'lucide-react'
+
 import RoomButton from './RoomButton'
 import { Button } from '@/components/ui/button'
-import { PlusCircleIcon } from 'lucide-react'
 
 interface FloorProps {
   name: string

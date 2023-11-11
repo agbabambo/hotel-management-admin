@@ -1,14 +1,22 @@
-import { adminCheck } from '@/helpers/adminCheck'
-import { knownErrHandler } from '@/helpers/knownErrHanler'
-import { db } from '@/lib/db'
 import { NextResponse } from 'next/server'
+
+import { db } from '@/lib/db'
+import { requiredRoleApi } from '@/helpers/requiredRoleApi'
 
 export async function PATCH(
   req: Request,
   { params }: { params: { roomTypeId: string } }
 ) {
   try {
-    await adminCheck()
+    await requiredRoleApi(['ADMIN', 'STAFF'])
+
+    if (!params.roomTypeId)
+      return new NextResponse('Room Type ID is missing', { status: 400 })
+    const dbRoomtype = await db.roomType.findUnique({
+      where: { id: params.roomTypeId },
+    })
+    if (!dbRoomtype)
+      return new NextResponse('Room Type not found', { status: 405 })
 
     const body = await req.json()
     const {
@@ -54,16 +62,24 @@ export async function PATCH(
 
     return NextResponse.json(roomTypes)
   } catch (err) {
-    return knownErrHandler(err, 'ROOM_TYPE_PATCH')
+    console.log([''])
   }
 }
 
 export async function DELETE(
-  req: Request,
+  _: Request,
   { params }: { params: { roomTypeId: string } }
 ) {
   try {
-    await adminCheck()
+    await requiredRoleApi(['ADMIN', 'STAFF'])
+
+    if (!params.roomTypeId)
+      return new NextResponse('Room Type ID is missing', { status: 400 })
+    const dbRoomtype = await db.roomType.findUnique({
+      where: { id: params.roomTypeId },
+    })
+    if (!dbRoomtype)
+      return new NextResponse('Room Type not found', { status: 405 })
 
     const rooms = await db.room.findMany({
       where: { roomTypeId: params.roomTypeId },
@@ -87,6 +103,7 @@ export async function DELETE(
 
     return NextResponse.json('DELETED')
   } catch (err) {
-    return knownErrHandler(err, 'ROOM_TYPE_DELETE')
+    console.log('[ROOMTYPE_DELETE]', err)
+    return new NextResponse('Internal error', { status: 500 })
   }
 }

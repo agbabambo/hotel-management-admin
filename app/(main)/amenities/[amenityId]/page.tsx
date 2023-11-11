@@ -1,5 +1,6 @@
 import { db } from '@/lib/db'
-import EditForm from '../components/edit-form'
+
+import EditForm from '@/app/(main)/amenities/components/edit-form'
 
 const AmenityPage = async ({ params }: { params: { amenityId: string } }) => {
   const amenity = await db.amenity.findUnique({

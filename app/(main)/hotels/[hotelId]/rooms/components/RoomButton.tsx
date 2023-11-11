@@ -1,8 +1,9 @@
 'use client'
 
-import { Room } from '@prisma/client'
 import { FC } from 'react'
+import { Room } from '@prisma/client'
 import { usePathname, useRouter } from 'next/navigation'
+
 import { Button } from '@/components/ui/button'
 import { roomStatus } from '../data'
 

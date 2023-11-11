@@ -4,10 +4,13 @@ import { db } from '@/lib/db'
 import { getAuthSession } from '@/lib/auth'
 
 export async function GET(
-  req: Request,
+  _: Request,
   { params }: { params: { userId: string } }
 ) {
   try {
+    if (!params.userId)
+      return new NextResponse('User ID is missing', { status: 400 })
+
     const user = await db.user.findUnique({
       where: { id: params.userId },
       include: { address: true },
@@ -28,6 +31,14 @@ export async function POST(
   { params }: { params: { userId: string } }
 ) {
   try {
+    if (!params.userId)
+      return new NextResponse('User ID is missing', { status: 400 })
+    const user = await db.user.findUnique({
+      where: { id: params.userId },
+      include: { address: true },
+    })
+    if (!user) return NextResponse.json({ message: 'No user found' })
+
     const body = await req.json()
 
     const { email, firstName, lastName, gender, phoneNumber, dateOfBirth } =
@@ -66,8 +77,6 @@ export async function PATCH(
 ) {
   try {
     const userAuth = await getAuthSession()
-    console.log(userAuth)
-
     if (userAuth?.user.role !== 'ADMIN')
       return NextResponse.json({
         message: 'User do not have permission to perform this action',

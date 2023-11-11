@@ -32,7 +32,7 @@ const UsersPage = async () => {
 
       <hr className='my-6' />
 
-      <DataTable data={formattedData} columns={columns} searchKey='roomName' />
+      <DataTable data={formattedData} columns={columns} searchKey='name' />
     </div>
   )
 }

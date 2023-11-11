@@ -5,9 +5,3 @@ export const roomStatus = [
   { color: '#525252', status: 'empty', label: 'empty' },
   { color: '#a855f7', status: 'needToClean', label: 'need to clean' },
 ]
-
-export const infoData = {
-  label: 'Room',
-  link: 'room',
-  pluralLink: 'rooms',
-}

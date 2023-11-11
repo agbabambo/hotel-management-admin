@@ -1,11 +1,11 @@
-import { adminCheck } from '@/helpers/adminCheck'
-import { knownErrHandler } from '@/helpers/knownErrHanler'
-import { db } from '@/lib/db'
 import { NextResponse } from 'next/server'
+
+import { requiredRoleApi } from '@/helpers/requiredRoleApi'
+import { db } from '@/lib/db'
 
 export async function POST(req: Request) {
   try {
-    await adminCheck()
+    await requiredRoleApi(['ADMIN', 'STAFF'])
 
     const body = await req.json()
 
@@ -14,6 +14,12 @@ export async function POST(req: Request) {
     if (!name || !status || !roomTypeId) {
       return new NextResponse('All fields are required', { status: 400 })
     }
+
+    const dbRoomType = await db.roomType.findUnique({
+      where: { id: roomTypeId },
+    })
+    if (!dbRoomType)
+      return new NextResponse('Room Type is not found', { status: 404 })
 
     if (status === 'booking')
       return new NextResponse(
@@ -31,6 +37,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json('OK')
   } catch (err) {
-    return knownErrHandler(err, 'ROOM_POST')
+    console.log('[ROOM_POST]', err)
+    return new NextResponse('Internal error', { status: 500 })
   }
 }

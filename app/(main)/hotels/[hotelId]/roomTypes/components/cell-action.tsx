@@ -6,7 +6,6 @@ import axios from 'axios'
 import { Edit, MoreHorizontal, Trash } from 'lucide-react'
 
 import { toast } from '@/components/ui/use-toast'
-import { infoData } from '../data'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -38,8 +37,8 @@ const CellAction: FC<CellActionProps> = ({ id }) => {
 
   const onConfirm = async () => {
     try {
-      await axios.delete(`/api/${infoData.pluralLink}/${id}`)
-      toast({ description: `${infoData.label} deleted` })
+      await axios.delete(`/api/roomTypes/${id}`)
+      toast({ description: `Room Type deleted` })
       router.refresh()
     } catch (err) {
       toast({ variant: 'destructive', description: 'Something went wrong' })

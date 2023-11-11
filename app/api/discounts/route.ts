@@ -1,11 +1,11 @@
-import { adminCheck } from '@/helpers/adminCheck'
-import { knownErrHandler } from '@/helpers/knownErrHanler'
-import { db } from '@/lib/db'
 import { NextResponse } from 'next/server'
+
+import { db } from '@/lib/db'
+import { requiredRoleApi } from '@/helpers/requiredRoleApi'
 
 export async function POST(req: Request) {
   try {
-    await adminCheck()
+    await requiredRoleApi(['ADMIN', 'STAFF'])
 
     const body = await req.json()
 
@@ -44,6 +44,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(discount)
   } catch (err) {
-    return knownErrHandler(err, 'DISCOUNT_POST')
+    console.log('[DISCOUNT_GET]', err)
+    return new NextResponse('Internal error', { status: 500 })
   }
 }

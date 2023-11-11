@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 
 import { db } from '@/lib/db'
-import { knownErrHandler } from '@/helpers/knownErrHanler'
 
 export async function GET(req: Request) {
   try {
@@ -17,15 +16,16 @@ export async function GET(req: Request) {
 
     return NextResponse.json(feedbacks)
   } catch (err) {
-    return knownErrHandler(err, '[FEEDBACK_GET]')
+    console.log('[FEEDBACK_GET]', err)
+    return new NextResponse('Internal error', { status: 500 })
   }
 }
+
 export async function POST(req: Request) {
   try {
     const body = await req.json()
 
     const { content, userId } = body
-    console.log('feedback', body)
 
     if (!content || !userId)
       return new NextResponse('All fields are required', { status: 400 })
@@ -34,10 +34,9 @@ export async function POST(req: Request) {
       data: { content, userId },
     })
 
-    console.log(fed)
-
     return NextResponse.json({ message: 'Updated successfully' })
   } catch (err) {
-    return knownErrHandler(err, '[FEEDBACK_POST]')
+    console.log('[FEEDBACK_POST]', err)
+    return new NextResponse('Internal error', { status: 500 })
   }
 }

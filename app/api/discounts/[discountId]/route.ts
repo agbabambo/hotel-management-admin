@@ -1,17 +1,15 @@
+import { NextResponse } from 'next/server'
+
+import { requiredRoleApi } from '@/helpers/requiredRoleApi'
 import { getAuthSession } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
-import { NextResponse } from 'next/server'
 
 export async function PATCH(
   req: Request,
   { params }: { params: { discountId: string } }
 ) {
   try {
-    const session = await getAuthSession()
-    if (!session) {
-      return new NextResponse('Unauthenticated', { status: 403 })
-    }
+    await requiredRoleApi(['ADMIN', 'STAFF'])
 
     const body = await req.json()
     const {
@@ -34,6 +32,14 @@ export async function PATCH(
       return new NextResponse('All fields are required', { status: 400 })
     }
 
+    if (!params.discountId)
+      return new NextResponse('Discount ID not found', { status: 404 })
+    const dbDiscount = await db.discount.findUnique({
+      where: { id: params.discountId },
+    })
+    if (!dbDiscount)
+      return new NextResponse('Discount not found', { status: 404 })
+
     const discount = await db.discount.update({
       where: { id: params.discountId },
       data: {
@@ -50,28 +56,20 @@ export async function PATCH(
 
     return NextResponse.json(discount)
   } catch (err) {
-    console.log('[DISCOUNT_PATCH]', err)
-    if (err instanceof PrismaClientKnownRequestError) {
-      if (err.code === 'P2002') {
-        return new NextResponse(
-          `Field ${err.meta?.target} is duplicated, please choose another value`,
-          { status: 400 }
-        )
-      }
-    }
+    console.log('[DISCOUNT_ID_PATCH]', err)
     return new NextResponse('Internal error', { status: 500 })
   }
 }
 
 export async function DELETE(
-  req: Request,
+  _: Request,
   { params }: { params: { discountId: string } }
 ) {
   try {
-    const session = await getAuthSession()
-    if (!session) {
-      return new NextResponse('Unauthenticated', { status: 403 })
-    }
+    await requiredRoleApi(['ADMIN', 'STAFF'])
+
+    if (!params.discountId)
+      return new NextResponse('Discount ID not found', { status: 404 })
 
     await db.roomType.updateMany({
       where: { discountId: params.discountId },
