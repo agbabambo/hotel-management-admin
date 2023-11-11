@@ -30,15 +30,18 @@ const main = async () => {
     // **********************************
     // **********    DELETE    **********
     // **********************************
+    // await db.booking_Room.deleteMany()
+    // await db.booking.deleteMany()
+    // await db.amenity_RoomType.deleteMany()
+    // await db.amenity_Hotel.deleteMany()
+    // await db.discount.deleteMany()
+    // await db.feedback.deleteMany()
     // await db.user.deleteMany()
     // await db.amenity.deleteMany()
-    // await db.hotel.deleteMany()
-    // await db.amenity_Hotel.deleteMany()
-    // await db.roomType.deleteMany()
-    // await db.amenity_RoomType.deleteMany()
     // await db.room.deleteMany()
+    // await db.roomType.deleteMany()
+    // await db.hotel.deleteMany()
     // await db.address.deleteMany()
-    // await db.discount.deleteMany()
   } catch (err) {
     console.log(err)
   } finally {

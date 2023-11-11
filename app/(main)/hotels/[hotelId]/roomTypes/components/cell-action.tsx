@@ -3,7 +3,7 @@
 import { FC, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import axios from 'axios'
-import { Edit, MoreHorizontal, Trash } from 'lucide-react'
+import { Edit, EditIcon, MoreHorizontal, Trash, TrashIcon } from 'lucide-react'
 
 import { toast } from '@/components/ui/use-toast'
 import {
@@ -16,13 +16,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 
 interface CellActionProps {
@@ -49,12 +42,32 @@ const CellAction: FC<CellActionProps> = ({ id }) => {
 
   return (
     <>
+      <div className='flex gap-3'>
+        <Button
+          className='p-2 h-8 w-8 bg-emerald-600 hover:bg-emerald-600/90'
+          size='sm'
+          onClick={() => router.push(`${pathname}/${id}`)}
+        >
+          <EditIcon className='w-4 h-4 text-white' />
+        </Button>
+
+        {/* TODO: add delete later */}
+        {/* {deletable && (
+          <Button
+            className='p-2 h-8 w-8 bg-rose-600 hover:bg-rose-600/90'
+            size='sm'
+            onClick={() => setOpen(true)}
+          >
+            <TrashIcon className='w-4 h-4 text-white' />
+          </Button>
+        )} */}
+      </div>
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              Thi saction cannot be undone.
+              This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -63,24 +76,6 @@ const CellAction: FC<CellActionProps> = ({ id }) => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant='ghost' className='h-8 w-8 p-0'>
-            <span className='sr-only'>Open menu</span>
-            <MoreHorizontal className='h-4 w-4' />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align='end'>
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => router.push(`${pathname}/${id}`)}>
-            <Edit className='mr-2 h-4 w-4' /> Update
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className='mr-2 h-4 w-4' /> Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
     </>
   )
 }

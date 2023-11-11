@@ -43,6 +43,8 @@ export async function POST(req: Request) {
       hotelId,
     } = body
 
+    console.log(body)
+
     if (
       !name ||
       !description ||

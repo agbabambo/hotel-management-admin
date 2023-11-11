@@ -98,7 +98,7 @@ const EditForm: FC<FormProps> = ({ initialData, amenities }) => {
       if (initialData) {
         await axios.patch(`/api/roomTypes/${params.roomTypeId}`, data)
       } else {
-        await axios.post(`/api/roomTypes`, data)
+        await axios.post(`/api/roomTypes`, { ...data, hotelId: params.hotelId })
       }
       router.refresh()
       router.push(pathname.slice(0, pathname.lastIndexOf('/')))

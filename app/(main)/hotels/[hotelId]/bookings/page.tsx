@@ -5,9 +5,13 @@ import { Column, columns } from './components/columns'
 import { DataTable } from '@/components/ui/data-table'
 
 const BookingPage = async ({ params }: { params: { hotelId: string } }) => {
-  console.log(params)
+  console.log('booking', params)
   const bookings = await db.booking.findMany({
-    where: { id: params.hotelId },
+    where: {
+      booking_rooms: {
+        some: { room: { roomType: { hotelId: params.hotelId } } },
+      },
+    },
     include: { booking_rooms: { include: { room: true } } },
     orderBy: { createdAt: 'desc' },
   })
